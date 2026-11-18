@@ -1,0 +1,515 @@
+onyxia@vscode-pyspark-495210-0:~/work$ pyspark --master local[*]
+Python 3.13.15 (main, Sep  7 2026, 06:06:30) [GCC 13.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+WARNING: Using incubator modules: jdk.incubator.vector
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version 4.1.1
+      /_/
+
+Using Python version 3.13.15 (main, Sep  7 2026 06:06:30)
+Spark context Web UI available at http://vscode-pyspark-495210-0.vscode-pyspark-495210.user-s-missoum-ece.svc.cluster.local:4040
+Spark context available as 'sc' (master = local[*], app id = local-1795029320527).
+SparkSession available as 'spark'.
+Ctrl click to launch VS Code Native REPL
+>>> users_lines = sc.textFile("users.csv")
+>>> orders_lines = sc.textFile("orders.csv")
+>>> 
+>>> print(users_lines.getNumPartitions())
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+    print(users_lines.getNumPartitions())
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/spark/python/pyspark/core/rdd.py", line 819, in getNumPartitions
+    return self._jrdd.partitions().size()
+           ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/spark/python/lib/py4j-0.10.9.9-src.zip/py4j/java_gateway.py", line 1362, in __call__
+    return_value = get_return_value(
+        answer, self.gateway_client, self.target_id, self.name)
+  File "/usr/local/lib/spark/python/pyspark/errors/exceptions/captured.py", line 263, in deco
+    return f(*a, **kw)
+  File "/usr/local/lib/spark/python/lib/py4j-0.10.9.9-src.zip/py4j/protocol.py", line 327, in get_return_value
+    raise Py4JJavaError(
+        "An error occurred while calling {0}{1}{2}.\n".
+        format(target_id, ".", name), value)
+py4j.protocol.Py4JJavaError: An error occurred while calling o52.partitions.
+: org.apache.hadoop.mapred.InvalidInputException: Input path does not exist: file:/home/onyxia/work/users.csv
+        at org.apache.hadoop.mapred.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:306)
+        at org.apache.hadoop.mapred.FileInputFormat.listStatus(FileInputFormat.java:245)
+        at org.apache.hadoop.mapred.FileInputFormat.getSplits(FileInputFormat.java:334)
+        at org.apache.spark.rdd.HadoopRDD.getPartitions(HadoopRDD.scala:231)
+        at org.apache.spark.rdd.RDD.$anonfun$partitions$2(RDD.scala:301)
+        at scala.Option.getOrElse(Option.scala:201)
+        at org.apache.spark.rdd.RDD.partitions(RDD.scala:297)
+        at org.apache.spark.rdd.MapPartitionsRDD.getPartitions(MapPartitionsRDD.scala:49)
+        at org.apache.spark.rdd.RDD.$anonfun$partitions$2(RDD.scala:301)
+        at scala.Option.getOrElse(Option.scala:201)
+        at org.apache.spark.rdd.RDD.partitions(RDD.scala:297)
+        at org.apache.spark.api.java.JavaRDDLike.partitions(JavaRDDLike.scala:62)
+        at org.apache.spark.api.java.JavaRDDLike.partitions$(JavaRDDLike.scala:62)
+        at org.apache.spark.api.java.AbstractJavaRDDLike.partitions(JavaRDDLike.scala:46)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:75)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:52)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+        at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+        at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:374)
+        at py4j.Gateway.invoke(Gateway.java:282)
+        at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+        at py4j.commands.CallCommand.execute(CallCommand.java:79)
+        at py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:184)
+        at py4j.ClientServerConnection.run(ClientServerConnection.java:108)
+        at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.io.IOException: Input path does not exist: file:/home/onyxia/work/users.csv
+        at org.apache.hadoop.mapred.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:279)
+        ... 25 more
+
+>>> print(orders_lines.getNumPartitions())
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+    print(orders_lines.getNumPartitions())
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/spark/python/pyspark/core/rdd.py", line 819, in getNumPartitions
+    return self._jrdd.partitions().size()
+           ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/spark/python/lib/py4j-0.10.9.9-src.zip/py4j/java_gateway.py", line 1362, in __call__
+    return_value = get_return_value(
+        answer, self.gateway_client, self.target_id, self.name)
+  File "/usr/local/lib/spark/python/pyspark/errors/exceptions/captured.py", line 263, in deco
+    return f(*a, **kw)
+  File "/usr/local/lib/spark/python/lib/py4j-0.10.9.9-src.zip/py4j/protocol.py", line 327, in get_return_value
+    raise Py4JJavaError(
+        "An error occurred while calling {0}{1}{2}.\n".
+        format(target_id, ".", name), value)
+py4j.protocol.Py4JJavaError: An error occurred while calling o54.partitions.
+: org.apache.hadoop.mapred.InvalidInputException: Input path does not exist: file:/home/onyxia/work/orders.csv
+        at org.apache.hadoop.mapred.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:306)
+        at org.apache.hadoop.mapred.FileInputFormat.listStatus(FileInputFormat.java:245)
+        at org.apache.hadoop.mapred.FileInputFormat.getSplits(FileInputFormat.java:334)
+        at org.apache.spark.rdd.HadoopRDD.getPartitions(HadoopRDD.scala:231)
+        at org.apache.spark.rdd.RDD.$anonfun$partitions$2(RDD.scala:301)
+        at scala.Option.getOrElse(Option.scala:201)
+        at org.apache.spark.rdd.RDD.partitions(RDD.scala:297)
+        at org.apache.spark.rdd.MapPartitionsRDD.getPartitions(MapPartitionsRDD.scala:49)
+        at org.apache.spark.rdd.RDD.$anonfun$partitions$2(RDD.scala:301)
+        at scala.Option.getOrElse(Option.scala:201)
+        at org.apache.spark.rdd.RDD.partitions(RDD.scala:297)
+        at org.apache.spark.api.java.JavaRDDLike.partitions(JavaRDDLike.scala:62)
+        at org.apache.spark.api.java.JavaRDDLike.partitions$(JavaRDDLike.scala:62)
+        at org.apache.spark.api.java.AbstractJavaRDDLike.partitions(JavaRDDLike.scala:46)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:75)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:52)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+        at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+        at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:374)
+        at py4j.Gateway.invoke(Gateway.java:282)
+        at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+        at py4j.commands.CallCommand.execute(CallCommand.java:79)
+        at py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:184)
+        at py4j.ClientServerConnection.run(ClientServerConnection.java:108)
+        at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.io.IOException: Input path does not exist: file:/home/onyxia/work/orders.csv
+        at org.apache.hadoop.mapred.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:279)
+        ... 25 more
+
+>>> exit()
+onyxia@vscode-pyspark-495210-0:~/work$ cd ~/work/uv_lab_repo_git
+onyxia@vscode-pyspark-495210-0:~/work/uv_lab_repo_git$ pyspark --master local[*]
+Python 3.13.15 (main, Sep  7 2026, 06:06:30) [GCC 13.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+WARNING: Using incubator modules: jdk.incubator.vector
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version 4.1.1
+      /_/
+
+Using Python version 3.13.15 (main, Sep  7 2026 06:06:30)
+Spark context Web UI available at http://vscode-pyspark-495210-0.vscode-pyspark-495210.user-s-missoum-ece.svc.cluster.local:4040
+Spark context available as 'sc' (master = local[*], app id = local-1795029393111).
+SparkSession available as 'spark'.
+Ctrl click to launch VS Code Native REPL
+>>> users_lines = sc.textFile("users.csv")
+>>> orders_lines = sc.textFile("orders.csv")
+>>> print(users_lines.getNumPartitions())
+2
+>>> print(orders_lines.getNumPartitions())
+2
+>>> header = orders_lines.first()
+>>>                                                                             
+>>> orders_data = orders_lines.filter(
+...     lambda line: line != header and line.strip() != ""
+... )
+>>> print(orders_data.toDebugString().decode())
+(2) PythonRDD[5] at RDD at PythonRDD.scala:58 []
+ |  orders.csv MapPartitionsRDD[3] at textFile at NativeMethodAccessorImpl.java:0 []
+ |  orders.csv HadoopRDD[2] at textFile at NativeMethodAccessorImpl.java:0 []
+>>> print(orders_data.count())
+2829
+>>> for line in users_lines.take(6):
+...     print(line)
+... print(users_lines.count())
+  File "<stdin>", line 3
+    print(users_lines.count())
+    ^^^^^
+SyntaxError: invalid syntax
+>>> print(users_lines.count())
+101
+>>>  for line in users_lines.take(6): print(line)
+  File "<stdin>", line 1
+    for line in users_lines.take(6): print(line)
+IndentationError: unexpected indent
+>>> for line in users_lines.take(6): print(line)
+... 
+uuid,username,name,sex,address,mail,birthdate
+bdd640fb-0667-4ad1-9c80-317fa3b1799d,garzaanthony,Charles Garcia,M,"908 Jennifer Squares
+Robinsonshire, KY 01352",helenpeterson@gmail.com,1935-11-09
+17be3111-1a2a-43ed-962b-0f79c37459ee,blairamanda,Ryan Munoz,M,"Unit 6184 Box 9593
+DPO AP 09617",stanleykendra@gmail.com,2010-02-04
+47294739-614f-43d7-99db-3ad0ddd1dfb2,elizabethmiles,Jacob Wood,M,"283 Steven Groves
+>>> print(users_lines.count())
+101
+>>> import re
+>>> 
+>>> UUID_AT_START = re.compile(
+...     r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+... )
+>>> 
+>>> users_records = users_lines.filter(
+...     lambda line: UUID_AT_START.match(line) is not None
+... )
+>>> 
+>>> print(users_records.count())
+50
+>>> def parse_order(line):
+...     order_id, user_id, date, quantity, product = line.split(",")
+...     return {
+...         "order_id": order_id,
+...         "user_id": user_id,
+...         "date": date,
+...         "quantity": int(quantity),
+...         "product": product.strip().lower(),
+...     }
+... 
+>>> orders_rdd = orders_data.map(parse_order).cache()
+>>> orders_rdd.take(3)
+[{'order_id': '2339ba19-2563-4cc3-8a97-ebf555d596af', 'user_id': 'bdd640fb-0667-4ad1-9c80-317fa3b1799d', 'date': '2020-01-01 00:02:17.891488+00:00', 'quantity': 4, 'product': 'drink'}, {'order_id': 'b49e04cc-c243-49e7-a387-eaf6d4c3a832', 'user_id': 'bdd640fb-0667-4ad1-9c80-317fa3b1799d', 'date': '2020-01-01 01:28:08.796458+00:00', 'quantity': 5, 'product': 'bread'}, {'order_id': '41843b03-04dd-4054-9448-23f7e7e646c7', 'user_id': 'bdd640fb-0667-4ad1-9c80-317fa3b1799d', 'date': '2020-01-01 02:12:56.357080+00:00', 'quantity': 2, 'product': 'donut'}]
+>>> from operator import add
+>>> 
+>>> user_quantity = (
+...     orders_rdd
+...     .map(lambda o: (o["user_id"], o["quantity"]))
+...     .reduceByKey(add)
+... )
+>>> 
+>>> user_quantity.take(5)
+[('f143262f-dc5c-4eed-8da0-365bf89897b9', 12), ('969b6662-0562-4059-968c-c69b1064005c', 40), ('ce9e1a11-fcbb-4e59-bbdd-cf7c9c96e9ec', 253), ('5563f616-00e8-4ece-8b49-452d46d483f3', 57), ('f94d6204-6808-493f-9fed-2c43e256a6dc', 175)]
+>>> user_quantity_grouped = (
+...     orders_rdd
+...     .map(lambda o: (o["user_id"], o["quantity"]))
+...     .groupByKey()
+...     .mapValues(sum)
+... )
+>>> 
+>>> user_quantity_grouped.take(5)
+[('f143262f-dc5c-4eed-8da0-365bf89897b9', 12), ('969b6662-0562-4059-968c-c69b1064005c', 40), ('ce9e1a11-fcbb-4e59-bbdd-cf7c9c96e9ec', 253), ('5563f616-00e8-4ece-8b49-452d46d483f3', 57), ('f94d6204-6808-493f-9fed-2c43e256a6dc', 175)]
+>>> def most_recent(order_a, order_b):
+...     return order_a if order_a["date"] > order_b["date"] else order_b
+... 
+>>> orders_dedup = (
+...     orders_rdd
+...     .map(lambda o: (o["order_id"], o))
+...     .reduceByKey(most_recent)
+...     .values()
+... )
+>>> print(orders_rdd.count(), orders_dedup.count())
+2829 2829
+>>> def parse_user_for_join(line):
+...     fields = line.split(",")
+...     return fields[0], fields[1]  # uuid, username
+... 
+>>> users_kv = users_records.map(parse_user_for_join)
+>>> 
+>>> orders_kv = orders_rdd.map(
+...     lambda o: (o["user_id"], o)
+... )
+>>> enriched = orders_kv.join(users_kv)
+>>> 
+>>> enriched.take(3)
+[('f143262f-dc5c-4eed-8da0-365bf89897b9', ({'order_id': 'f1f7d904-1307-4157-98c1-28e7d6cd3155', 'user_id': 'f143262f-dc5c-4eed-8da0-365bf89897b9', 'date': '2020-01-07 17:49:04.785279+00:00', 'quantity': 1, 'product': 'bread'}, 'kayla51')), ('f143262f-dc5c-4eed-8da0-365bf89897b9', ({'order_id': 'a175a9c3-d7b1-42a9-a332-a50e6992896e', 'user_id': 'f143262f-dc5c-4eed-8da0-365bf89897b9', 'date': '2020-01-07 18:13:53.160212+00:00', 'quantity': 2, 'product': 'bread'}, 'kayla51')), ('f143262f-dc5c-4eed-8da0-365bf89897b9', ({'order_id': '5f8a14bd-74bd-4c93-8177-b66137fe032c', 'user_id': 'f143262f-dc5c-4eed-8da0-365bf89897b9', 'date': '2020-01-07 19:03:37.620428+00:00', 'quantity': 5, 'product': 'croissant'}, 'kayla51'))]
+>>> user_stats = (
+...     orders_rdd
+...     .map(lambda o: (o["user_id"], o["quantity"]))
+...     .aggregateByKey(
+...         (0, 0),
+...         lambda acc, q: (acc[0] + 1, acc[1] + q),
+...         lambda a, b: (a[0] + b[0], a[1] + b[1])
+...     )
+... )
+>>> 
+>>> user_stats.take(5)
+[('f143262f-dc5c-4eed-8da0-365bf89897b9', (4, 12)), ('969b6662-0562-4059-968c-c69b1064005c', (12, 40)), ('ce9e1a11-fcbb-4e59-bbdd-cf7c9c96e9ec', (85, 253)), ('5563f616-00e8-4ece-8b49-452d46d483f3', (21, 57)), ('f94d6204-6808-493f-9fed-2c43e256a6dc', (49, 175))]
+>>> avg_quantity = (
+...     user_stats
+...     .mapValues(lambda x: x[1] / x[0])
+... )
+>>> 
+>>> avg_quantity.take(5)
+[('f143262f-dc5c-4eed-8da0-365bf89897b9', 3.0), ('969b6662-0562-4059-968c-c69b1064005c', 3.3333333333333335), ('ce9e1a11-fcbb-4e59-bbdd-cf7c9c96e9ec', 2.976470588235294), ('5563f616-00e8-4ece-8b49-452d46d483f3', 2.7142857142857144), ('f94d6204-6808-493f-9fed-2c43e256a6dc', 3.5714285714285716)]
+>>> fake_order = {
+...     "order_id": "fake-order",
+...     "user_id": "FAKE_USER",
+...     "date": "2020-01-01",
+...     "quantity": 1,
+...     "product": "fake-product"
+... }
+>>> orders_fake = orders_rdd.union(
+...     sc.parallelize([fake_order])
+... )
+>>> joined = orders_fake_kv.leftOuterJoin(users_kv)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+    joined = orders_fake_kv.leftOuterJoin(users_kv)
+             ^^^^^^^^^^^^^^
+NameError: name 'orders_fake_kv' is not defined. Did you mean: 'orders_fake'?
+>>> fake_order = {
+...     "order_id": "fake-order",
+...     "user_id": "FAKE_USER",
+...     "date": "2020-01-01",
+...     "quantity": 1,
+...     "product": "fake-product"
+... }
+>>> 
+>>> orders_fake = orders_rdd.union(
+...     sc.parallelize([fake_order])
+... )
+>>> orders_fake_kv = orders_fake.map(
+...     lambda o: (o["user_id"], o)
+... )
+>>> joined = orders_fake_kv.leftOuterJoin(users_kv)
+>>> missing = joined.filter(
+...     lambda x: x[1][1] is None
+... )
+>>> 
+>>> print(missing.count())
+1                                                                               
+>>> from pyspark.sql import Row
+>>> 
+>>> orders_df = spark.createDataFrame(
+...     orders_rdd.map(lambda o: Row(**o))
+... )
+>>> orders_df.groupBy("user_id") \
+...          .sum("quantity") \
+...          .show()
+[Stage 23:>                                                         (0 + 2) / 2]
++--------------------+-------------+                                            
+|             user_id|sum(quantity)|
++--------------------+-------------+
+|f53d4330-cdda-44b...|          250|
+|1190f938-a66f-47f...|           92|
+|490617f2-747b-4db...|           43|
+|8a476a87-e49d-481...|          223|
+|ce9e1a11-fcbb-4e5...|          253|
+|17be3111-1a2a-43e...|           49|
+|90164161-cfa7-41c...|          270|
+|5563f616-00e8-4ec...|           57|
+|bc67f831-cbc8-475...|           15|
+|48603b32-b4fb-4eb...|          246|
+|3f07f814-91d6-4f7...|          200|
+|47294739-614f-43d...|           69|
+|9793b9b4-1374-414...|          289|
+|88bd13d1-b540-430...|          253|
+|f94d6204-6808-493...|          175|
+|20ac3703-eb67-446...|          162|
+|969b6662-0562-405...|           40|
+|bdd640fb-0667-4ad...|          256|
+|72bb912d-7da6-478...|          317|
+|0dde29a6-baa4-471...|          285|
++--------------------+-------------+
+only showing top 20 rows
+>>> 
+>>> from pyspark.sql import Row
+>>> 
+>>> orders_df = spark.createDataFrame(
+...     orders_rdd.map(lambda o: Row(**o))
+... )
+>>> orders_df.groupBy("user_id") \
+...          .sum("quantity") \
+...          .show()
++--------------------+-------------+
+|             user_id|sum(quantity)|
++--------------------+-------------+
+|f53d4330-cdda-44b...|          250|
+|1190f938-a66f-47f...|           92|
+|490617f2-747b-4db...|           43|
+|8a476a87-e49d-481...|          223|
+|ce9e1a11-fcbb-4e5...|          253|
+|17be3111-1a2a-43e...|           49|
+|90164161-cfa7-41c...|          270|
+|5563f616-00e8-4ec...|           57|
+|bc67f831-cbc8-475...|           15|
+|48603b32-b4fb-4eb...|          246|
+|3f07f814-91d6-4f7...|          200|
+|47294739-614f-43d...|           69|
+|9793b9b4-1374-414...|          289|
+|88bd13d1-b540-430...|          253|
+|f94d6204-6808-493...|          175|
+|20ac3703-eb67-446...|          162|
+|969b6662-0562-405...|           40|
+|bdd640fb-0667-4ad...|          256|
+|72bb912d-7da6-478...|          317|
+|0dde29a6-baa4-471...|          285|
++--------------------+-------------+
+only showing top 20 rows
+>>> orders_df.groupBy("user_id") \
+...          .sum("quantity") \
+...          .explain(True)
+== Parsed Logical Plan ==
+'Aggregate ['user_id], ['user_id, unresolvedalias('sum(quantity#25L))]
++- LogicalRDD [order_id#22, user_id#23, date#24, quantity#25L, product#26], false
+
+== Analyzed Logical Plan ==
+user_id: string, sum(quantity): bigint
+Aggregate [user_id#23], [user_id#23, sum(quantity#25L) AS sum(quantity)#50L]
++- LogicalRDD [order_id#22, user_id#23, date#24, quantity#25L, product#26], false
+
+== Optimized Logical Plan ==
+Aggregate [user_id#23], [user_id#23, sum(quantity#25L) AS sum(quantity)#50L]
++- Project [user_id#23, quantity#25L]
+   +- LogicalRDD [order_id#22, user_id#23, date#24, quantity#25L, product#26], false
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- HashAggregate(keys=[user_id#23], functions=[sum(quantity#25L)], output=[user_id#23, sum(quantity)#50L])
+   +- Exchange hashpartitioning(user_id#23, 200), ENSURE_REQUIREMENTS, [plan_id=111]
+      +- HashAggregate(keys=[user_id#23], functions=[partial_sum(quantity#25L)], output=[user_id#23, sum#52L])
+         +- Project [user_id#23, quantity#25L]
+            +- Scan ExistingRDD[order_id#22,user_id#23,date#24,quantity#25L,product#26]
+
+>>> import time
+>>> t0 = time.perf_counter()
+>>> orders_rdd.count()
+2829
+>>> t1 = time.perf_counter()
+>>> 
+>>> print("orders_rdd =", t1 - t0)
+orders_rdd = 0.13957083798595704
+>>> t0 = time.perf_counter()
+>>> user_quantity.count()
+50
+>>> t1 = time.perf_counter()
+>>> 
+>>> print("user_quantity =", t1 - t0)
+user_quantity = 0.13808750800671987
+>>> 
+>>> 
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
+Traceback (most recent call last):
+  File "/usr/local/lib/spark/python/pyspark/core/context.py", line 409, in signal_handler
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+>>> 
