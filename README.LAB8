@@ -1,1 +1,66 @@
 
+Questions and answers
+Inspect the files
+
+Which files contain the actual rows? The Parquet files in warehouse/silver/orders/data/. At the start there was only one.
+
+Which files describe the table? The files in metadata/: v1.metadata.json (schema, snapshots), the manifest ...-m0.avro, the snapshot file snap-....avro, and version-hint.text, which tells a reader which version is current.
+
+Why does an Iceberg table need more than the Parquet files? A folder of Parquet files is just a pile of files. It does not say which files belong to the table, what the current schema is, or which versions existed. The metadata gives all of that and makes atomic commits possible.
+
+Explore Iceberg metadata
+
+How many snapshots does the table currently have? One, with the operation overwrite (created by createOrReplace).
+
+How many data files belong to the current table? One, with record_count = 2829.
+
+What does the snapshots table contain that the Parquet files do not? A snapshot_id, the commit time, the operation (overwrite, append), the manifest list and a summary (number of files and rows). A Parquet file only knows about its own rows.
+
+Create a second snapshot
+
+How many snapshots are there now? Two: overwrite then append. The row count went from 2829 to 2832.
+
+Did the original Parquet files disappear? No. The first file is still there and a new Parquet file with 3 rows was added.
+
+Why does Iceberg create a new snapshot instead of replacing the table? Each commit is a complete, atomic version of the table. This keeps the history, allows time travel and rollback, and a running reader never sees a half-written state.
+
+Time travel
+
+What does time travel read? The list of files of the requested snapshot. With VERSION AS OF on the first snapshot I get 2829 rows, while the current table has 2832.
+
+Why can Iceberg access an older version without a full copy? Snapshots share the same data files. A new snapshot only references a few extra files, so mostly the metadata changes.
+
+What happens if the old snapshot's metadata and data files are physically deleted? Queries on that version fail because the referenced files cannot be found. The current version still works as long as its own files exist. This is what expire_snapshots does when cleaning up.
+
+Schema evolution
+
+Did the existing Parquet files have to be rewritten? No. The old rows keep their files and source is NULL for them. Only the new INSERT wrote a file that contains the extra column.
+
+Where is the new schema recorded? In a new vN.metadata.json file (there are now up to v4), and version-hint.text points to the latest one.
+
+Why is schema evolution a table-level operation rather than changing a Parquet file? A Parquet file is immutable and carries its own schema. Iceberg tracks columns by ID at the table level, so a column can be added without touching existing files.
+
+Compare Iceberg with Parquet
+
+Which one is simply a collection of Parquet files? silver/spark/orders.parquet/, which only contains data files and _SUCCESS.
+
+Which one has table metadata and snapshots? warehouse/silver/orders/.
+
+How would you safely replace a Parquet directory while another query is reading it? Write the new result to a different directory, then switch the path readers use. On S3 there is no atomic directory rename, so some risk remains. This is why a table format like Iceberg is used.
+
+How does Iceberg make the table state visible atomically? The new data and metadata files are written first. The commit then switches the pointer to the new metadata.json. A reader sees either the old version or the new one, never something in between.
+
+Why is a catalog needed once several engines share the same Iceberg table? Every engine must know where the current version is, and two simultaneous writes must not overwrite each other. A catalog provides one central place and an atomic swap of the pointer. With the hadoop catalog of this lab the pointer is just a file in the bucket, which does not protect against concurrent commits.
+
+Exercises on the users table
+Create: lab.silver.users already existed (50 rows, 1 overwrite snapshot).
+Append: I added 3 users with new user_id values (uuid()). There are now 2 snapshots and 53 rows.
+Time travel: VERSION AS OF on the first snapshot gives 50 rows, the current table gives 53.
+country column: I ran ALTER TABLE ... ADD COLUMN country STRING, then inserted one row with 'FR'. The table has 54 rows and 3 snapshots; country is NULL for the first 53 rows and FR for the last.
+S3 layout: users and orders have the same structure (data/ and metadata/). The users files are smaller because there are only 50 rows.
+
+Difference between Parquet, Iceberg and an Iceberg catalog:
+
+Parquet: a columnar file format that stores the data.
+Iceberg: a table format. It keeps the data in Parquet and adds metadata (schema, snapshots, file list).
+Iceberg catalog: the service or location that knows where the current version of each table is and updates it atomically.
