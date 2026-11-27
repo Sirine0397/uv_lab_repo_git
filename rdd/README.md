@@ -1,11 +1,8 @@
 ## RDD creation and partitions
-
 ### Question 1
-
 The number of partitions created by textFile() depends on the size of the file and Hadoop's input split configuration. Since the files used in this lab are relatively small, Spark created only 2 partitions.
 
 ### Question 2
-
 repartition() always performs a shuffle to redistribute the data between partitions.
 
 coalesce() can reduce the number of partitions without performing a full shuffle, making it more efficient when decreasing the partition count.
